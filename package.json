@@ -10,6 +10,7 @@
     "build": "brunch build --production"
   },
   "dependencies": {
+    "bootstrap": "^4.0.0",
     "cors": "^2.8.4",
     "jquery": "^3.3.1"
   },
