@@ -1,4 +1,4 @@
-(function (){
+(function() {
   document.addEventListener('DOMContentLoaded', () => {
     // do your setup here
     getJson();
@@ -6,140 +6,127 @@
   });
 
   var jsonData = {},
-      currentSelection = [],
-      columnOne = document.getElementById('column-1'),
-      columnTwo = document.getElementById('column-2'),
-      columnThree = document.getElementById('column-3'),
-      modal = document.getElementById('modal'),
-      close = document.getElementById('close');
-
+    currentSelection = [],
+    columnOne = document.getElementById('column-1'),
+    columnTwo = document.getElementById('column-2'),
+    columnThree = document.getElementById('column-3'),
+    modal = document.getElementById('modal'),
+    close = document.getElementById('close');
 
   close.addEventListener('click', closeModal);
-
-
 
   function getJson() {
     var request = new XMLHttpRequest();
     request.open('GET', 'products.json', true);
 
-    request.onload =function() {
-      if (request.status >= 200 && request.status < 400){
+    request.onload = function() {
+      if (request.status >= 200 && request.status < 400) {
         jsonData = JSON.parse(request.responseText);
         currentSelection = jsonData.groups;
         buildProductPage();
-
-      }else {
+      } else {
         console.log('something went wrong')
       }
     }
     request.send();
-
-
   }
 
   function buildProductPage() {
-      var distributionCounter = currentSelection.length,
-                  allProducts = [];
+    var distributionCounter = currentSelection.length,
+      allProducts = [],
+      tabIndexCounter = 4;
 
-      currentSelection.forEach((product) => {
-        let item = document.createElement('div'),
-            img = document.createElement('img'),
-            name = document.createElement('h3'),
-            priceRange = document.createElement('b'),
-            images = [];
+    currentSelection.forEach((product) => {
+      let item = document.createElement('div'),
+        img = document.createElement('img'),
+        name = document.createElement('h3'),
+        priceRange = document.createElement('b'),
+        images = [];
 
-        product.images.forEach((image) => {
-          images.push(image.href);
-        })
-        console.log(images);
+      product.images.forEach((image) => {
+        images.push(image.href);
+      })
+      console.log(images);
 
-        if(product.priceRange){
-          item.setAttribute('data-lowPrice', product.priceRange.selling.low);
-          item.setAttribute('data-highPrice', product.priceRange.selling.high);
-          priceRange.innerHTML = product.priceRange.selling.low + '$ to ' + product.priceRange.selling.high + '$';
-        }
+      if (product.priceRange) {
+        item.setAttribute('data-lowPrice', product.priceRange.selling.low);
+        item.setAttribute('data-highPrice', product.priceRange.selling.high);
+        priceRange.innerHTML = product.priceRange.selling.low + '$ to ' + product.priceRange.selling.high + '$';
+      }
 
-        // console.log(images);
+      item.setAttribute('data-name', product.name);
+      item.setAttribute('data-images', images.join(','));
+      item.className = 'product-detail';
+      img.setAttribute('tabIndex', tabIndexCounter);
+      img.src = product.hero.href;
+      img.alt = product.name
+      img.onclick = openModal;
+      img.onkeypress = keyActivate;
+      name.innerHTML = product.name;
 
-        item.setAttribute('data-name', product.name);
-        item.setAttribute('data-images', images.join(','));
-        item.className = 'product-detail';
-        img.src = product.hero.href;
-        img.alt = product.name
-        img.onclick = openModal;
-        name.innerHTML = product.name;
+      item.appendChild(img);
+      item.appendChild(name);
+      item.appendChild(priceRange);
 
-        item.appendChild(img);
-        item.appendChild(name);
-        item.appendChild(priceRange);
-
-        if(distributionCounter <= currentSelection.length * 1/ 3) {
-          columnThree.appendChild(item);
-        } else if(distributionCounter <= currentSelection.length * 2/3){
-          columnTwo.appendChild(item);
-        } else {
-          columnOne.appendChild(item);
-        }
-        distributionCounter --;
-      });
+      if (distributionCounter <= currentSelection.length * 1 / 3) {
+        columnThree.appendChild(item);
+      } else if (distributionCounter <= currentSelection.length * 2 / 3) {
+        columnTwo.appendChild(item);
+      } else {
+        columnOne.appendChild(item);
+      }
+      distributionCounter--;
+      tabIndexCounter++;
+    });
   }
 
   function openModal(e) {
-    // console.log(e.target.parentNode);
-    // console.log('open modal here');
-    // console.log(modal);
     var imageURLSArray = e.target.parentNode.dataset.images.split(','),
-        mainImages = document.getElementById('main-display'),
-        thumbnailImages = document.getElementById('thumbnails'),
-        imageCounter = 0;
+      mainImages = document.getElementById('main-display'),
+      thumbnailImages = document.getElementById('thumbnails'),
+      imageCounter = 0,
+      tabIndexCounter = 25;
 
     mainImages.innerHTML = "";
     thumbnailImages.innerHTML = "";
-    // console.log(e.target.parentNode.dataset.images);
 
     imageURLSArray.forEach((imageURL) => {
       let carouselItem = document.createElement('div'),
-          thumbnailItem = document.createElement('div'),
-          carouselImage = document.createElement('img'),
-          thumbImage = document.createElement('img');
+        thumbnailItem = document.createElement('div'),
+        carouselImage = document.createElement('img'),
+        thumbImage = document.createElement('img');
 
-      carouselItem.className = imageCounter === 0 ? 'item active':'item';
+      carouselItem.className = imageCounter === 0 ? 'item active' : 'item';
       thumbnailItem.className = 'thumb';
       thumbnailItem.setAttribute('data-target', '#carousel');
       thumbnailItem.setAttribute('data-slide-to', imageCounter);
       carouselImage.src = imageURL;
       thumbImage.src = imageURL;
+      thumbImage.setAttribute('tabIndex', tabIndexCounter);
 
       carouselItem.appendChild(carouselImage);
       thumbnailItem.appendChild(thumbImage);
 
-      // thumbnailItem.addEventListener('click', function)
-
-      // console.log(carouselItem, thumbnailItem);
       imageCounter++;
+      tabIndexCounter++;
       mainImages.appendChild(carouselItem);
       thumbnailImages.appendChild(thumbnailItem);
-      // mainImages[0].appendChild(`<div class="item"> <img src="${imageURL}"> </div>`);
-      // thumbnailImages[0].appendChild(`<div data-target="#carousel" data-slide-to="0" class="thumb"><img src="${imageURL}"></div>`)
     })
 
     modal.style.display = "block";
 
-
-    // var child = document.createElement('div');
-    //     child.className = 'inside';
-    // var text = document.createElement('h1');
-    //     text.className = 'inside-text';
-    //     text.innerHTML = 'Hello Worlds';
-    // child.appendChild(text);
-    //
-    // var modal = new Modal(child, true);
-    // modal.show();
-
   }
 
-  function closeModal(){
+  function closeModal() {
     modal.style.display = "none";
+  }
+
+  function keyActivate(e) {
+    console.log('pressing key');
+    if(e.keyCode ==13 || e.keyCode == 32){
+      openModal(e);
+    }
+
   }
 
 
