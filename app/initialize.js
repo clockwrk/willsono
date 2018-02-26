@@ -1,9 +1,5 @@
 (function() {
-  document.addEventListener('DOMContentLoaded', () => {
-    // do your setup here
-    getJson();
-    console.log('Initialized app');
-  });
+
 
   var jsonData = {},
     currentSelection = [],
@@ -13,7 +9,11 @@
     modal = document.getElementById('modal'),
     close = document.getElementById('close');
 
-  close.addEventListener('click', closeModal);
+  var dispatchMouseEvent = function(target, var_args) {
+    var e = document.createEvent("MouseEvents");
+    e.initEvent.apply(e, Array.prototype.slice.call(arguments, 1));
+    target.dispatchEvent(e);
+  };
 
   function getJson() {
     var request = new XMLHttpRequest();
@@ -34,7 +34,7 @@
   function buildProductPage() {
     var distributionCounter = currentSelection.length,
       allProducts = [],
-      tabIndexCounter = 4;
+      tabIndexCounter = 10     ;
 
     currentSelection.forEach((product) => {
       let item = document.createElement('div'),
@@ -81,11 +81,12 @@
   }
 
   function openModal(e) {
+    e.target.blur();
     var imageURLSArray = e.target.parentNode.dataset.images.split(','),
       mainImages = document.getElementById('main-display'),
       thumbnailImages = document.getElementById('thumbnails'),
       imageCounter = 0,
-      tabIndexCounter = 25;
+      tabIndexCounter = 1;
 
     mainImages.innerHTML = "";
     thumbnailImages.innerHTML = "";
@@ -103,6 +104,7 @@
       carouselImage.src = imageURL;
       thumbImage.src = imageURL;
       thumbImage.setAttribute('tabIndex', tabIndexCounter);
+      thumbImage.onkeypress = thumbnailActivate;
 
       carouselItem.appendChild(carouselImage);
       thumbnailItem.appendChild(thumbImage);
@@ -114,20 +116,46 @@
     })
 
     modal.style.display = "block";
+    thumbnailImages.firstChild.firstChild.focus();
+    thumbnailImages.lastChild.firstChild.onblur = tabTrap;
 
+    close.addEventListener('click', closeModal);
+    close.setAttribute('tabIndex', 0);
+    close.onblur = tabBegin;
   }
 
   function closeModal() {
     modal.style.display = "none";
   }
 
-  function keyActivate(e) {
-    console.log('pressing key');
-    if(e.keyCode ==13 || e.keyCode == 32){
+  function keyActivate(e,second) {
+    e.preventDefault();
+    if(e.keyCode === 13 || e.keyCode == 32){
       openModal(e);
     }
-
   }
 
+  function thumbnailActivate(e) {
+    e.preventDefault();
+    if(e.keyCode === 13 || e.keyCode === 32){
+      dispatchMouseEvent(e.target, 'click', true, true);
+    }
+  }
 
+  function tabTrap(e) {
+    e.preventDefault();
+    close.focus();
+  }
+
+  function tabBegin(e) {
+    var thumbnailImages = document.getElementById('thumbnails');
+    e.preventDefault();
+    thumbnailImages.firstChild.firstChild.focus();
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    // do your setup here
+    getJson();
+    console.log('Initialized app');
+  });
 })()
