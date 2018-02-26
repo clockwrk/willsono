@@ -1,6 +1,4 @@
 (function() {
-
-
   var jsonData = {},
     currentSelection = [],
     columnOne = document.getElementById('column-1'),
@@ -15,55 +13,60 @@
     target.dispatchEvent(e);
   };
 
+  //retrieves json and begins product page creation
   function getJson() {
     var request = new XMLHttpRequest();
     request.open('GET', 'products.json', true);
-
     request.onload = function() {
       if (request.status >= 200 && request.status < 400) {
         jsonData = JSON.parse(request.responseText);
         currentSelection = jsonData.groups;
         buildProductPage();
       } else {
-        console.log('something went wrong')
+        console.log('something went horribly wrong');
       }
     }
     request.send();
   }
 
+  //creates product detail cards and adds them to the columns
   function buildProductPage() {
     var distributionCounter = currentSelection.length,
       allProducts = [],
-      tabIndexCounter = 10     ;
+      tabIndexCounter = 10;
 
     currentSelection.forEach((product) => {
       let item = document.createElement('div'),
         img = document.createElement('img'),
         name = document.createElement('h3'),
+        productLink = document.createElement('a'),
         priceRange = document.createElement('b'),
         images = [];
 
       product.images.forEach((image) => {
         images.push(image.href);
       })
-      console.log(images);
 
       if (product.priceRange) {
         item.setAttribute('data-lowPrice', product.priceRange.selling.low);
         item.setAttribute('data-highPrice', product.priceRange.selling.high);
         priceRange.innerHTML = product.priceRange.selling.low + '$ to ' + product.priceRange.selling.high + '$';
+        priceRange.className = 'price';
       }
+
+      img.setAttribute('tabIndex', tabIndexCounter);
+      img.src = product.hero.href;
+      img.alt = product.name;
+      img.onclick = openModal;
+      img.onkeypress = keyActivate;
+      productLink.innerHTML = product.name;
+      productLink.setAttribute('href', product.links.www);
+      name.className = 'name';
+      name.appendChild(productLink);
 
       item.setAttribute('data-name', product.name);
       item.setAttribute('data-images', images.join(','));
       item.className = 'product-detail';
-      img.setAttribute('tabIndex', tabIndexCounter);
-      img.src = product.hero.href;
-      img.alt = product.name
-      img.onclick = openModal;
-      img.onkeypress = keyActivate;
-      name.innerHTML = product.name;
-
       item.appendChild(img);
       item.appendChild(name);
       item.appendChild(priceRange);
@@ -80,8 +83,8 @@
     });
   }
 
+  //dynamically creates modal/carousel for each product
   function openModal(e) {
-    e.target.blur();
     var imageURLSArray = e.target.parentNode.dataset.images.split(','),
       mainImages = document.getElementById('main-display'),
       thumbnailImages = document.getElementById('thumbnails'),
@@ -154,8 +157,6 @@
   }
 
   document.addEventListener('DOMContentLoaded', () => {
-    // do your setup here
     getJson();
-    console.log('Initialized app');
   });
 })()
