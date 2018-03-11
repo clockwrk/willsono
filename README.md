@@ -13,3 +13,5 @@
 
 * Learn:
     * `public/` dir is fully auto-generated and served by HTTP server. Code is written in `app/` dir.
+
+    Thank you for taking the time to review my work.
