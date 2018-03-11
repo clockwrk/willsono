@@ -1,17 +1,12 @@
-(function() {
+(function($) {
   var jsonData = {},
     currentSelection = [],
+    body = document.getElementsByTagName('body'),
     columnOne = document.getElementById('column-1'),
     columnTwo = document.getElementById('column-2'),
     columnThree = document.getElementById('column-3'),
     modal = document.getElementById('modal'),
     close = document.getElementById('close');
-
-  var dispatchMouseEvent = function(target, var_args) {
-    var e = document.createEvent("MouseEvents");
-    e.initEvent.apply(e, Array.prototype.slice.call(arguments, 1));
-    target.dispatchEvent(e);
-  };
 
   //retrieves json and begins product page creation
   function getJson() {
@@ -33,11 +28,11 @@
   function buildProductPage() {
     var distributionCounter = currentSelection.length,
       allProducts = [],
-      tabIndexCounter = 10;
+      tabIndexCounter = 0;
 
     currentSelection.forEach((product) => {
       let item = document.createElement('div'),
-        img = document.createElement('img'),
+        img = document.createElement('input'),
         name = document.createElement('h3'),
         productLink = document.createElement('a'),
         priceRange = document.createElement('b'),
@@ -54,13 +49,16 @@
         priceRange.className = 'price';
       }
 
-      img.setAttribute('tabIndex', tabIndexCounter);
+      //  img.setAttribute('tabIndex', tabIndexCounter);
       img.src = product.hero.href;
       img.alt = product.name;
-      img.onclick = openModal;
+      img.setAttribute('type', 'image');
+
+      img.onmousedown = openModal;
       img.onkeypress = keyActivate;
       productLink.innerHTML = product.name;
       productLink.setAttribute('href', product.links.www);
+      productLink.setAttribute('target', '_blank');
       name.className = 'name';
       name.appendChild(productLink);
 
@@ -88,6 +86,7 @@
     var imageURLSArray = e.target.parentNode.dataset.images.split(','),
       mainImages = document.getElementById('main-display'),
       thumbnailImages = document.getElementById('thumbnails'),
+      carousel = document.getElementById('carousel'),
       imageCounter = 0,
       tabIndexCounter = 1;
 
@@ -99,6 +98,7 @@
         thumbnailItem = document.createElement('div'),
         carouselImage = document.createElement('img'),
         thumbImage = document.createElement('img');
+
 
       carouselItem.className = imageCounter === 0 ? 'item active' : 'item';
       thumbnailItem.className = 'thumb';
@@ -119,6 +119,9 @@
     })
 
     modal.style.display = "block";
+    $('.carousel').carousel('cycle');
+
+    console.log(thumbnailImages.firstChild.firstChild)
     thumbnailImages.firstChild.firstChild.focus();
     thumbnailImages.lastChild.firstChild.onblur = tabTrap;
 
@@ -127,26 +130,42 @@
     close.onblur = tabBegin;
   }
 
+  window.onclick = function(event) {
+      if (event.target == modal) {
+          modal.style.display = "none";
+      }
+    }
+
+  function dispatchMouseEvent(target, var_args) {
+    console.log('HERE')
+    var e = document.createEvent("MouseEvents");
+    e.initEvent.apply(e, Array.prototype.slice.call(arguments, 1));
+    target.dispatchEvent(e);
+  };
+
   function closeModal() {
+    $('.carousel').carousel('pause');
     modal.style.display = "none";
+
   }
 
   function keyActivate(e,second) {
-    e.preventDefault();
-    if(e.keyCode === 13 || e.keyCode == 32){
+
+    if(e.keyCode === 13 || e.keyCode === 32){
       openModal(e);
     }
   }
 
   function thumbnailActivate(e) {
-    e.preventDefault();
+
     if(e.keyCode === 13 || e.keyCode === 32){
+      e.preventDefault();
       dispatchMouseEvent(e.target, 'click', true, true);
     }
   }
 
   function tabTrap(e) {
-    e.preventDefault();
+
     close.focus();
   }
 
@@ -154,9 +173,10 @@
     var thumbnailImages = document.getElementById('thumbnails');
     e.preventDefault();
     thumbnailImages.firstChild.firstChild.focus();
+
   }
 
   document.addEventListener('DOMContentLoaded', () => {
     getJson();
   });
-})()
+})(jQuery);

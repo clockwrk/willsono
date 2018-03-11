@@ -1,5 +1,10 @@
-.product-detail > img {
+.product-detail > input {
   width: 100%;
+  margin-bottom: -6px;
+}
+
+img {
+  width:100%;
 }
 
 .name {
@@ -45,13 +50,23 @@
 }
 
 .product-detail {
-
   position:relative;
+  background-color: white;
+}
+
+.product-detail img:focus {
+  opacity: .1;
+}
+
+
+.product-detail img:hover {
+    opacity: .1;
 }
 
 a {
    color: rgba(0,0,0,.5) !important;
    text-decoration: none;
+   font-size: 2vh;
 }
 
 .modal {
@@ -101,10 +116,10 @@ a {
 .carousel-control.right, .carousel-control.left { background-color: rgba(0, 0, 0, 0); background-image: none; }
 
 .carousel-inner>.item>img {
-  max-width: 70%;
+  max-width: 100%;
 }
 
-@media only screen and (max-width: 700px)  {
+@media only screen and (max-width: 750px)  {
   .column {
     width: 100%;
   }
@@ -112,5 +127,7 @@ a {
     width: 100%;
   }
 }
+
+
 
 /*# sourceMappingURL=app.css.map*/
