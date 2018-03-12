@@ -16,7 +16,6 @@
     "chai": "^4.1.2",
     "cors": "^2.8.4",
     "focus-trap": "^2.4.3",
-    "fs": "0.0.1-security",
     "graceful-fs": "^4.1.11",
     "jquery": "^3.3.1"
   },
