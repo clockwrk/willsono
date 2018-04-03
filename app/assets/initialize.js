@@ -1,5 +1,5 @@
 (function($) {
-    var jsonData = {},
+    let jsonData = {},
         currentSelection = [],
         body = document.getElementsByTagName('body'),
         columnOne = document.getElementById('column-1'),
@@ -10,7 +10,7 @@
 
     //retrieves json and begins product page creation
     function getJson() {
-        var request = new XMLHttpRequest();
+        let request = new XMLHttpRequest();
         request.open('GET', 'products.json', true);
         request.onload = function() {
             if (request.status >= 200 && request.status < 400) {
@@ -26,7 +26,7 @@
 
     //creates product detail cards and adds them to the columns
     function buildProductPage() {
-        var distributionCounter = currentSelection.length,
+        let distributionCounter = currentSelection.length,
             allProducts = [],
             tabIndexCounter = 0;
 
@@ -83,7 +83,7 @@
 
     //dynamically creates modal/carousel for each product
     function openModal(e) {
-        var imageURLSArray = e.target.parentNode.dataset.images.split(','),
+        let imageURLSArray = e.target.parentNode.dataset.images.split(','),
             mainImages = document.getElementById('main-display'),
             thumbnailImages = document.getElementById('thumbnails'),
             carousel = document.getElementById('carousel'),
@@ -136,7 +136,7 @@
     }
 
     function dispatchMouseEvent(target, var_args) {
-        var e = document.createEvent("MouseEvents");
+        let e = document.createEvent("MouseEvents");
         e.initEvent.apply(e, Array.prototype.slice.call(arguments, 1));
         target.dispatchEvent(e);
     };
@@ -164,7 +164,7 @@
     }
 
     function tabBegin(e) {
-        var thumbnailImages = document.getElementById('thumbnails');
+        let thumbnailImages = document.getElementById('thumbnails');
         e.preventDefault();
         thumbnailImages.firstChild.firstChild.focus();
     }
