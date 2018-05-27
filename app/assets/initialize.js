@@ -6,7 +6,8 @@
         columnTwo = document.getElementById('column-2'),
         columnThree = document.getElementById('column-3'),
         modal = document.getElementById('modal'),
-        close = document.getElementById('close');
+        close = document.getElementById('close'),
+        filters = document.getElementById('filters');
 
     //retrieves json and begins product page creation
     function getJson() {
@@ -29,6 +30,10 @@
         let distributionCounter = currentSelection.length,
             allProducts = [],
             tabIndexCounter = 0;
+
+        columnOne.innerHTML = "";
+        columnTwo.innerHTML = "";
+        columnThree.innerHTML = "";
 
         currentSelection.forEach((product) => {
             let item = document.createElement('div'),
@@ -97,7 +102,9 @@
             let carouselItem = document.createElement('div'),
                 thumbnailItem = document.createElement('div'),
                 carouselImage = document.createElement('img'),
-                thumbImage = document.createElement('img');
+                thumbImage = document.createElement('img'),
+                leftArrow = document.createElement('span'),
+                rightArrow = document.createElement('span');
 
 
             carouselItem.className = imageCounter === 0 ? 'item active' : 'item';
@@ -109,8 +116,10 @@
             thumbImage.setAttribute('tabIndex', tabIndexCounter);
             thumbImage.onkeypress = thumbnailActivate;
 
+
             carouselItem.appendChild(carouselImage);
             thumbnailItem.appendChild(thumbImage);
+
 
             imageCounter++;
             tabIndexCounter++;
@@ -168,6 +177,56 @@
         e.preventDefault();
         thumbnailImages.firstChild.firstChild.focus();
     }
+
+    function sortby(e) {
+      if(e.target.classList.contains("checkboxes")) {
+
+        let productsWithprices = [],
+            productsWithoutPrices = [];
+
+          if(e.target.value === "alphabet"){
+            currentSelection.sort(function(a, b){
+              if(a.name < b.name) return -1;
+              if(a.name > b.name) return 1;
+                return 0;
+            })
+
+            buildProductPage()
+          }else if(e.target.value === "Highest"){
+            productsWithPrices = currentSelection.filter( x => !!x.priceRange);
+            productsWithoutPrices = currentSelection.filter( x => !x.priceRange);
+
+            productsWithPrices.sort(function(a, b){
+              if(a.priceRange.selling.high > b.priceRange.selling.high) return 1;
+              if(a.priceRange.selling.high < b.priceRange.selling.high) return -1;
+
+                return 0;
+
+            })
+
+
+            currentSelection = productsWithPrices.concat(productsWithoutPrices);
+
+            buildProductPage()
+          }else if(e.target.value === "Lowest"){
+            productsWithprices = currentSelection.filter( x => !!x.priceRange);
+            productsWithoutPrices = currentSelection.filter( x => !x.priceRange);
+
+            productsWithPrices.sort(function(a, b){
+                if(a.priceRange.selling.low > b.priceRange.selling.low) return 1;
+                if(a.priceRange.selling.low < b.priceRange.selling.low) return -1;
+
+                return 0;
+            })
+
+            currentSelection = productsWithPrices.concat(productsWithoutPrices);
+
+            buildProductPage()
+          }
+      }
+    }
+
+    filters.addEventListener("click", sortby);
 
     document.addEventListener('DOMContentLoaded', () => {
         getJson();

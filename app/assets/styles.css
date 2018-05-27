@@ -92,6 +92,10 @@ input[type=image]:focus {
   opacity: 0.5;
 }
 
+.checkboxes {
+  display: inline;
+}
+
 
 
 .product-slider { padding: 10px; }
