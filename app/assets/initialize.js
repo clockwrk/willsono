@@ -198,11 +198,9 @@
             productsWithoutPrices = currentSelection.filter( x => !x.priceRange);
 
             productsWithPrices.sort(function(a, b){
-              if(a.priceRange.selling.high > b.priceRange.selling.high) return 1;
-              if(a.priceRange.selling.high < b.priceRange.selling.high) return -1;
-
+              if(a.priceRange.selling.high < b.priceRange.selling.high) return 1;
+              if(a.priceRange.selling.high > b.priceRange.selling.high) return -1;
                 return 0;
-
             })
 
 
