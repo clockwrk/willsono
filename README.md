@@ -2,7 +2,7 @@
 
 A submission to a William Sonoma coding challenge. 
 
-Given a JSON file with an input of products designed a page that meets this criteria:
+Given a JSON file with an input of products designed a page that meets these criteria:
 * Consumes the JSON of products
 * Builds the product details page with all products
 * Displays the product details, including price, product name and the main hero image
