@@ -18,6 +18,7 @@
                 jsonData = JSON.parse(request.responseText);
                 currentSelection = jsonData.groups;
                 buildProductPage();
+                showPage();
             } else {
                 console.log('something went horribly wrong');
             }
@@ -226,9 +227,17 @@
       }
     }
 
+    function showPage() {
+      document.getElementsByClassName('brunch')[0].classList.remove("loading-page")
+      document.getElementsByClassName("loader")[0].classList.remove("loader")
+
+
+    }
+
     filters.addEventListener("click", sortby);
 
     document.addEventListener('DOMContentLoaded', () => {
         getJson();
+        showPage();
     });
 })(jQuery);
