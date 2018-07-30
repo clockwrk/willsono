@@ -226,7 +226,10 @@
     }
 
     function showPage() {
-      document.getElementsByClassName('brunch')[0].classList.remove("loading-page")
+      setTimeout(function(){
+        document.getElementsByClassName('brunch')[0].classList.remove("loading-page");
+      }, 2000);
+
     }
 
     filters.addEventListener("click", sortby);
